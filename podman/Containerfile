@@ -1,4 +1,4 @@
-# Use a lightweight Alpine Linux base image
+# Use an Alpine Linux base image
 FROM alpine:latest
 
 # Set environment variables for Grafana
@@ -30,8 +30,8 @@ RUN apk add --no-cache \
     tzdata \
     git \
     net-tools && \
-    # Download Grafana (removed -q for more verbose output during build)
-    # Updated URL to reflect the new GF_VERSION and likely correct filename pattern
+    # Download Grafana
+    # Updated URL to reflect the new GF_VERSION and filename pattern
     wget https://dl.grafana.com/oss/release/grafana-${GF_VERSION}.linux-amd64.tar.gz -O /tmp/grafana.tar.gz && \
     # Create Grafana directories
     mkdir -p ${GF_INSTALL_DIR} ${GF_PATHS_DATA} ${GF_PATHS_LOGS} ${GF_PATHS_PLUGINS} ${GF_PATHS_PROVISIONING} && \
