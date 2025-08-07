@@ -1,14 +1,15 @@
-# Use a lightweight Alpine Linux base image
+# Use an Alpine Linux base image
 FROM alpine:latest
 
 # Set environment variables for Grafana
 # Updated GF_VERSION to 12.1.0 (latest stable as of search)
 ENV GF_VERSION=12.1.0 \
     GF_INSTALL_DIR="/usr/share/grafana" \
-    GF_PATHS_CONFIG="/etc/grafana/grafana.ini" \
+    GF_PATHS_CONFIG="/etc/grafana" \
     GF_PATHS_DATA="/var/lib/grafana" \
     GF_PATHS_HOME="/usr/share/grafana" \
     GF_PATHS_LOGS="/var/log/grafana" \
+    GF_PATHS_DASHBOARDS="/var/lib/grafana/dashboards" \
     GF_PATHS_PLUGINS="/var/lib/grafana/plugins" \
     GF_PATHS_PROVISIONING="/etc/grafana/provisioning"
 
@@ -18,23 +19,22 @@ ENV GF_VERSION=12.1.0 \
 # - tar: To extract the Grafana archive
 # - fontconfig, freetype: Required for Grafana's rendering capabilities
 # - udev: Often a dependency for fontconfig/freetype in Alpine contexts
-# - git: Added for git command functionality
-# - net-tools: Added for ifconfig command functionality
+# - net-tools: Added for network troubleshooting within Container
 RUN apk add --no-cache \
     ca-certificates \
     wget \
+    unzip \
     tar \
     fontconfig \
     freetype \
     udev \
     tzdata \
-    git \
     net-tools && \
-    # Download Grafana (removed -q for more verbose output during build)
-    # Updated URL to reflect the new GF_VERSION and likely correct filename pattern
+    # Download Grafana
+    # Updated URL to reflect the new GF_VERSION and filename pattern
     wget https://dl.grafana.com/oss/release/grafana-${GF_VERSION}.linux-amd64.tar.gz -O /tmp/grafana.tar.gz && \
     # Create Grafana directories
-    mkdir -p ${GF_INSTALL_DIR} ${GF_PATHS_DATA} ${GF_PATHS_LOGS} ${GF_PATHS_PLUGINS} ${GF_PATHS_PROVISIONING} && \
+    mkdir -p ${GF_INSTALL_DIR} ${GF_PATHS_CONFIG} ${GF_PATHS_DATA} ${GF_PATHS_LOGS} ${GF_PATHS_DASHBOARDS} ${GF_PATHS_PLUGINS} ${GF_PATHS_PROVISIONING} && \
     # Extract Grafana to the installation directory
     tar -xzf /tmp/grafana.tar.gz --strip-components=1 -C ${GF_INSTALL_DIR} && \
     # Remove the downloaded archive
@@ -42,14 +42,17 @@ RUN apk add --no-cache \
     # Create a Grafana user and group
     addgroup -S grafana && adduser -S -G grafana grafana && \
     # Set appropriate permissions for Grafana directories
-    chown -R grafana:grafana ${GF_PATHS_DATA} ${GF_PATHS_LOGS} ${GF_PATHS_PLUGINS} ${GF_PATHS_PROVISIONING} && \
-    chmod -R 775 ${GF_PATHS_DATA} ${GF_PATHS_LOGS} ${GF_PATHS_PLUGINS} ${GF_PATHS_PROVISIONING} && \
-    # Create default Grafana configuration directory and file
-    mkdir -p /etc/grafana && \
-    cp ${GF_INSTALL_DIR}/conf/defaults.ini ${GF_PATHS_CONFIG} && \
-    cp ${GF_INSTALL_DIR}/conf/sample.ini /etc/grafana/grafana.ini.sample && \
+    chown -R grafana:grafana ${GF_PATHS_DATA} ${GF_PATHS_LOGS} ${GF_PATHS_PLUGINS} ${GF_PATHS_DASHBOARDS} ${GF_PATHS_PROVISIONING} && \
+    chmod -R 750 ${GF_PATHS_DATA} ${GF_PATHS_LOGS} ${GF_PATHS_PLUGINS} ${GF_PATHS_DASHBOARDS} ${GF_PATHS_PROVISIONING} && \
     # Clean up apk cache
     rm -rf /var/cache/apk/*
+
+# Copy the configuration files from the host into the image
+COPY grafana/config ${GF_PATHS_CONFIG}
+# Copy the provisioning files into the image
+COPY grafana/provisioning ${GF_PATHS_PROVISIONING}
+# Copy the dashboard JSON files into the image
+COPY grafana/dashboards ${GF_PATHS_DASHBOARDS}
 
 # Expose Grafana's default port
 EXPOSE 3000

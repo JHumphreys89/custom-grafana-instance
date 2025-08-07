@@ -1,0 +1,11 @@
+apiVersion: 1
+
+providers:
+  - name: dashboards
+    type: file
+    updateIntervalSeconds: 1800
+    disableDeletion: true
+    allowUIUpdates: true
+    options:
+      path: ${GF_PATHS_DASHBOARDS}
+      foldersFromFilesStructure: true
