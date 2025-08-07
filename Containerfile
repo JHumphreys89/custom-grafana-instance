@@ -19,10 +19,11 @@ ENV GF_VERSION=12.1.0 \
 # - tar: To extract the Grafana archive
 # - fontconfig, freetype: Required for Grafana's rendering capabilities
 # - udev: Often a dependency for fontconfig/freetype in Alpine contexts
-# - net-tools: Added for ifconfig command functionality
+# - net-tools: Added for network troubleshooting within Container
 RUN apk add --no-cache \
     ca-certificates \
     wget \
+    unzip \
     tar \
     fontconfig \
     freetype \
@@ -47,13 +48,11 @@ RUN apk add --no-cache \
     rm -rf /var/cache/apk/*
 
 # Copy the configuration files from the host into the image
-COPY ../grafana/config ${GF_PATHS_CONFIG}
-
+COPY grafana/config ${GF_PATHS_CONFIG}
 # Copy the provisioning files into the image
-COPY ../grafana/provisioning ${GF_PATHS_DASHBOARDS}
-
+COPY grafana/provisioning ${GF_PATHS_PROVISIONING}
 # Copy the dashboard JSON files into the image
-COPY ../grafana/dashboards ${GF_PATHS_PROVISIONING}
+COPY grafana/dashboards ${GF_PATHS_DASHBOARDS}
 
 # Expose Grafana's default port
 EXPOSE 3000
