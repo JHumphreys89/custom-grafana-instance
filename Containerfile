@@ -3,7 +3,9 @@ FROM alpine:latest
 
 # Set environment variables for Grafana
 # Updated GF_VERSION to 12.1.0 (latest stable as of search)
+# Updated GF_INFINITY_VERSION to 3.4.1 (latest stable as of search)
 ENV GF_VERSION=12.1.0 \
+    GF_INFINITY_VERSION=3.4.1 \
     GF_INSTALL_DIR="/usr/share/grafana" \
     GF_PATHS_CONFIG="/etc/grafana" \
     GF_PATHS_DATA="/var/lib/grafana" \
@@ -11,11 +13,13 @@ ENV GF_VERSION=12.1.0 \
     GF_PATHS_LOGS="/var/log/grafana" \
     GF_PATHS_DASHBOARDS="/var/lib/grafana/dashboards" \
     GF_PATHS_PLUGINS="/var/lib/grafana/plugins" \
-    GF_PATHS_PROVISIONING="/etc/grafana/provisioning"
+    GF_PATHS_PROVISIONING="/etc/grafana/provisioning" \
+    GF_ADMIN_USER="admin"
 
 # Install necessary packages:
 # - ca-certificates: For HTTPS connections
 # - wget: To download Grafana
+# - unzip: To extract Grafana plugins
 # - tar: To extract the Grafana archive
 # - fontconfig, freetype: Required for Grafana's rendering capabilities
 # - udev: Often a dependency for fontconfig/freetype in Alpine contexts
@@ -39,6 +43,12 @@ RUN apk add --no-cache \
     tar -xzf /tmp/grafana.tar.gz --strip-components=1 -C ${GF_INSTALL_DIR} && \
     # Remove the downloaded archive
     rm /tmp/grafana.tar.gz && \
+    # Download Grafana Infinity plugin
+    wget https://storage.googleapis.com/integration-artifacts/yesoreyeram-infinity-datasource/release/${GF_INFINITY_VERSION}/linux/yesoreyeram-infinity-datasource-${GF_INFINITY_VERSION}.linux_amd64.zip -O /tmp/grafana-infinity.zip &&\
+    # Extract Plugin to plugins directory
+    unzip /tmp/grafana-infinity.zip -d ${GF_PATHS_PLUGINS} && \
+    # Remove the downloaded file
+    rm /tmp/grafana-infinity.zip && \
     # Create a Grafana user and group
     addgroup -S grafana && adduser -S -G grafana grafana && \
     # Set appropriate permissions for Grafana directories
