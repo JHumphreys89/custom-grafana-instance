@@ -1,7 +1,7 @@
 # Grafana - Provisioning as Code
 This custom Grafana image accomplishes the following:
 - Sets up environment variables for paths used in Grafana configuration
-- Installs a custom set of apps within the Container (_and comes in around 100MB smaller than the official grafana/grafana image_)
+- Installs a custom set of packages and plugins within the Container
 - Sets ownership, permissions of directories specified in environment variables
 - Copies the provisioning/config files, and custom dashboards from the Git repository directly into the Container (no mounts required)
 
@@ -29,6 +29,15 @@ Once the image is built, you can run a container from it. This command will:
 
 ```shell
 podman run -d --name grafana-server -p 3000:3000 grafana-custom
+```
+
+#### **Setting an Admin Password for the Grafana Admin Account:**
+
+- If you would like to set a password for the admin user, you can add the `-e GF_ADMIN_PASSWORD=""` flag inside of the above `podman run` command. 
+- To have a randomly generated password, you can use `-e GF_ADMIN_PASSWORD="$(mktemp -u XXXXXXXXXX)"`. This will generate a random string of X characters. You can then obtain the password by using the following podman command:
+
+```shell
+podman exec grafana-server printenv GF_ADMIN_PASS
 ```
 
 After running the podman run command, Grafana should be accessible in your web browser at `http://localhost:3000`
