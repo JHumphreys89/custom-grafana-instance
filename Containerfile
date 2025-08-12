@@ -54,8 +54,10 @@ RUN apk add --no-cache \
     # Set appropriate permissions for Grafana directories
     chown -R grafana:grafana ${GF_PATHS_DATA} ${GF_PATHS_LOGS} ${GF_PATHS_PLUGINS} ${GF_PATHS_DASHBOARDS} ${GF_PATHS_PROVISIONING} && \
     chmod -R 750 ${GF_PATHS_DATA} ${GF_PATHS_LOGS} ${GF_PATHS_PLUGINS} ${GF_PATHS_DASHBOARDS} ${GF_PATHS_PROVISIONING} && \
+    # Symlink grafana-cli to /bin
+    ln -s /usr/share/grafana/bin/grafana-cli /bin/grafana-cli && \
     # Clean up apk cache
-    rm -rf /var/cache/apk/*
+    rm -rf /var/cache/apk/* 
 
 # Copy the configuration files from the host into the image
 COPY grafana/config ${GF_PATHS_CONFIG}

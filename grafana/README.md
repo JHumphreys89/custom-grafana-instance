@@ -91,10 +91,8 @@ The folder structure is as follows:
 
 ```shell
 ${GF_PATHS_DASHBOARDS} # /var/lib/grafana/dashboards, or whatever path is defined in the environment variable
-├── /General
-│   ├── /common_dashboard.json
-│   └── /network_dashboard.json
-└── /application
-    ├── /requests_dashboard.json
-    └── /resources_dashboard.json
+├── /Map
+│   ├── /earthquakes_by_day.json
+└── /Statistics
+    └── /titanic_metrics.json
 ```
