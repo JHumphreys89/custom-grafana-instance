@@ -1,0 +1,10 @@
+apiVersion: 1
+
+datasources:
+  - name: Graphite
+    type: graphite
+    access: proxy
+    url: http://localhost:2003
+    uid: graphite
+    jsonData:
+      graphiteVersion: '1.1'
