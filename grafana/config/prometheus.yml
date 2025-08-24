@@ -15,15 +15,21 @@ rule_files:
 scrape_configs:
   # The job name is added as a label 'job=<job_name>' to any timeseries scraped from this config.
   - job_name: 'grafana'
-
-  # Scheme defaults to 'http'
     
     scrape_interval: 15s
     scrape_timeout: 5s
     metrics_path: /metrics
 
     static_configs:
-      - targets: ['localhost:9090']
-        # The label name is added as a label 'label_name=<label_value>' to any timeseries scraped from this config
-        #labels:
-        #  app: "grafana"
+      - targets: ['localhost:3000']
+
+  - job_name: 'prometheus'
+
+  # metrics_path defaults to '/metrics'
+  # scheme defaults to 'http'
+
+#    static_configs:
+#      - targets: ['localhost:9090']
+#       # The label name is added as a label 'label_name=<label_value>' to any timeseries scraped from this config
+#        labels:
+#          app: "prometheus"

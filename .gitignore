@@ -1,6 +1,3 @@
-# Ignore markdown files
-*.md
-
 # Editor directories and files
 ## IntelliJ / JetBrains IDEs
 .idea/
@@ -14,10 +11,15 @@
 *.swp
 *.swo
 
-# If using pipelines, do not upload build artifacts
-target/
-dist/
-build/
+# Caches and logs
+.cache/
+log/
 
-# Misc
-*~
+# Ignore sensitive files
+## Environment vars
+*.env*
+## Private keys and certs
+*.pem
+*.key
+*.p12
+*.crt
