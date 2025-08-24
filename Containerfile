@@ -57,9 +57,8 @@ RUN apk add --no-cache \
     # Set appropriate permissions for Grafana directories
     chown -R grafana:grafana ${GF_PATHS_DATA} ${GF_PATHS_LOGS} ${GF_PATHS_PLUGINS} ${GF_PATHS_DASHBOARDS} ${GF_PATHS_PROVISIONING} && \
     chmod -R 750 ${GF_PATHS_DATA} ${GF_PATHS_LOGS} ${GF_PATHS_PLUGINS} ${GF_PATHS_DASHBOARDS} ${GF_PATHS_PROVISIONING} && \
-    # Symlink grafana-cli and prometheus to /bin
+    # Symlink grafana-cli to /bin (deprecated, but I prefer it so it stays.)
     ln -s ${GF_INSTALL_DIR}/bin/grafana-cli /bin/grafana-cli && \
-    ln -s ${GF_PATHS_PLUGINS}/prometheus-${GF_PROMETHEUS_VERSION}-rc.0.linux-amd64/prometheus /usr/bin/prometheus && \
     # Clean up apk cache
     rm -rf /var/cache/apk/* 
 
