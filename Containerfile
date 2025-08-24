@@ -41,8 +41,8 @@ RUN apk add --no-cache \
     net-tools \
     prometheus && \
     # Ensure appropriate permissions for init script
-    chown grafana:grafana /tmp/commands_to_run.sh
-    chmod 750 /tmp/commands_to_run.sh
+    chown grafana:grafana /tmp/commands_to_run.sh && \
+    chmod 750 /tmp/commands_to_run.sh && \
     # Download Grafana
     # Updated URL to reflect the new GF_VERSION and filename pattern
     wget https://dl.grafana.com/oss/release/grafana-${GF_VERSION}.linux-amd64.tar.gz -O /tmp/grafana.tar.gz && \
