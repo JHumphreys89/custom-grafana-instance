@@ -19,6 +19,12 @@ ENV GF_VERSION=12.1.0 \
 
 # Adding wrapper script for init CMD
 ADD bin/commands_to_run.sh /tmp
+# Copy the configuration files from the host into the image
+COPY grafana/config ${GF_PATHS_CONFIG}
+# Copy the provisioning files into the image
+COPY grafana/provisioning ${GF_PATHS_PROVISIONING}
+# Copy the dashboard JSON files into the image
+COPY grafana/dashboards ${GF_PATHS_DASHBOARDS}
 
 # Install necessary packages:
 # - ca-certificates: For HTTPS connections
@@ -66,13 +72,6 @@ RUN apk add --no-cache \
     prometheus --config.file ${GF_PATHS_CONFIG}/prometheus.yml && \
     # Lastly, clean up apk cache
     rm -rf /var/cache/apk/* 
-
-# Copy the configuration files from the host into the image
-COPY grafana/config ${GF_PATHS_CONFIG}
-# Copy the provisioning files into the image
-COPY grafana/provisioning ${GF_PATHS_PROVISIONING}
-# Copy the dashboard JSON files into the image
-COPY grafana/dashboards ${GF_PATHS_DASHBOARDS}
 
 # Expose Grafana's default port
 EXPOSE 3000
