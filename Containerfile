@@ -7,7 +7,6 @@ FROM alpine:latest
 # Updated GF_PROMETHEUS_VERSION to 3.6.0 (latest stable as of search)
 ENV GF_VERSION=12.1.0 \
     GF_INFINITY_VERSION=3.4.1 \
-    GF_PROMETHEUS_VERSION=3.6.0 \
     GF_INSTALL_DIR="/usr/share/grafana" \
     GF_PATHS_CONFIG="/etc/grafana" \
     GF_PATHS_DATA="/var/lib/grafana" \
@@ -93,5 +92,5 @@ CMD ["./bin/grafana-server", \
     "cfg:default.paths.provisioning=/etc/grafana/provisioning"]
 
 # Also, define the command to run Prometheus when the container starts
-CMD ["./usr/bin/prometheus", \
+CMD ["prometheus", \
     "--config.file", "${GF_PATHS_CONFIG}/prometheus.yml"]
