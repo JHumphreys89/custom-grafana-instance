@@ -17,13 +17,6 @@ ENV GF_VERSION=12.1.0 \
     GF_PATHS_PROVISIONING="/etc/grafana/provisioning" \
     GF_ADMIN_USER="admin"
 
-# Copy the configuration files from the host into the image
-COPY grafana/config ${GF_PATHS_CONFIG}
-# Copy the provisioning files into the image
-COPY grafana/provisioning ${GF_PATHS_PROVISIONING}
-# Copy the dashboard JSON files into the image
-COPY grafana/dashboards ${GF_PATHS_DASHBOARDS}
-
 # Install necessary packages:
 # - ca-certificates: For HTTPS connections
 # - wget: To download Grafana
@@ -71,6 +64,13 @@ RUN apk add --no-cache \
     # Lastly, clean up apk cache
     rm -rf /var/cache/apk/* 
 
+# Copy the configuration files from the host into the image
+COPY grafana/config ${GF_PATHS_CONFIG}
+# Copy the provisioning files into the image
+COPY grafana/provisioning ${GF_PATHS_PROVISIONING}
+# Copy the dashboard JSON files into the image
+COPY grafana/dashboards ${GF_PATHS_DASHBOARDS}
+
 # Expose Grafana's default port
 EXPOSE 3000
 
@@ -83,7 +83,7 @@ WORKDIR ${GF_INSTALL_DIR}
 # Switch to the Grafana user
 USER grafana
 
-# Then define the command to run Grafana when the container starts
+# Define the command to run Grafana when the container starts
 CMD ["./bin/grafana-server", \
     "--homepath", "/usr/share/grafana", \
     "--config", "/etc/grafana/grafana.ini", \
