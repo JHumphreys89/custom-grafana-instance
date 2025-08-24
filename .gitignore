@@ -1,0 +1,25 @@
+# Editor directories and files
+## IntelliJ / JetBrains IDEs
+.idea/
+*.iml
+## VS Code
+.vscode/
+## Sublime Text
+*.sublime-project
+*.sublime-workspace
+## Vi(m)
+*.swp
+*.swo
+
+# Caches and logs
+.cache/
+log/
+
+# Ignore sensitive files
+## Environment vars
+*.env*
+## Private keys and certs
+*.pem
+*.key
+*.p12
+*.crt

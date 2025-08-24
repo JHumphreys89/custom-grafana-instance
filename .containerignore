@@ -1,0 +1,23 @@
+# Ignore markdown files
+*.md
+
+# Editor directories and files
+## IntelliJ / JetBrains IDEs
+.idea/
+*.iml
+## VS Code
+.vscode/
+## Sublime Text
+*.sublime-project
+*.sublime-workspace
+## Vi(m)
+*.swp
+*.swo
+
+# If using pipelines, do not upload build artifacts
+target/
+dist/
+build/
+
+# Misc
+*~

@@ -41,6 +41,7 @@ Navigate to `grafana/config`. There, you will find a `grafana.ini` and `ldap.tom
     ```
     
     Additionally, you would need to setup the `ldap.toml` file in order to authenticate to your LDAP server.
+- See the official Grafana documentation on [configuring Grafana](https://grafana.com/docs/grafana/latest/setup-grafana/configure-grafana/) for further assistance.
 
 ### `ldap.toml`
 -  LDAP setup will not be covered in this Git repo.
@@ -54,14 +55,16 @@ The following items can be provisioned as code for Grafana:
 - alerting
 - and more!
 
-If this Git repo does not include a specific provisioning resource, you can create a new folder inside of the Git repo path `grafana/provisioning`, which can then include its provisioning.yaml file.
+If this Git repo does not include a specific provisioning resource, you can create a new folder inside of the Git repo path `grafana/provisioning` [here](grafana/provisioning), which can then include its `\<provisioning.yaml\>` file.
 
 See Grafana documentation on usage [here](https://grafana.com/docs/grafana/latest/administration/provisioning/).
 
 > NOTE: You CAN use environment variables in ALL provisioning configuration. The syntax for an environment variable can either be `$ENV_VAR_NAME` or `${ENV_VAR_NAME}`.
 
+See the official Grafana documentation on [provisioning Grafana](https://grafana.com/docs/grafana/latest/administration/provisioning/) for further assistance.
+
 ### Dashboard Provisioning
-Located in `grafana/provisioning/dashboards`, the `dashboards.yaml` file is explained in the code block below:
+Located in the Git directory (`grafana/provisioning/dashboards`) [here](grafana/provisioning/dashboards.yaml), the `dashboards.yaml` file is explained in the code block below:
 
 ```yaml
 # Config file version
@@ -91,10 +94,11 @@ The folder structure is as follows:
 
 ```shell
 ${GF_PATHS_DASHBOARDS} # /var/lib/grafana/dashboards, or whatever path is defined in the environment variable
-├── /General
-│   ├── /common_dashboard.json
-│   └── /network_dashboard.json
-└── /application
-    ├── /requests_dashboard.json
-    └── /resources_dashboard.json
+├── Grafana
+│   └── metrics.json
+├── Infinity Dashboards
+    ├── Map
+    │   └── earthquakes_by_day.json
+    └── Statistics
+        └── titanic_metrics.json
 ```
