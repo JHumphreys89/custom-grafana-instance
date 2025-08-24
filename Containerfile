@@ -86,7 +86,7 @@ WORKDIR ${GF_INSTALL_DIR}
 USER grafana
 
 # Run commands_to_run.sh when the Container starts
-CMD ["/tmp/commands_to_run.sh"]
+ENTRYPOINT ["/tmp/commands_to_run.sh"]
 
 # Then define the command to run Grafana when the container starts
 #CMD ["./bin/grafana-server", \
