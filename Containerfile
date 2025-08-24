@@ -40,9 +40,6 @@ RUN apk add --no-cache \
     tzdata \
     net-tools \
     prometheus && \
-    # Ensure appropriate permissions for init script
-    chown grafana:grafana /tmp/commands_to_run.sh && \
-    chmod 750 /tmp/commands_to_run.sh && \
     # Download Grafana
     # Updated URL to reflect the new GF_VERSION and filename pattern
     wget https://dl.grafana.com/oss/release/grafana-${GF_VERSION}.linux-amd64.tar.gz -O /tmp/grafana.tar.gz && \
@@ -60,9 +57,9 @@ RUN apk add --no-cache \
     rm /tmp/grafana-infinity.zip && \
     # Create a Grafana user and group
     addgroup -S grafana && adduser -S -G grafana grafana && \
-    # Set appropriate permissions for Grafana directories
-    chown -R grafana:grafana ${GF_PATHS_DATA} ${GF_PATHS_LOGS} ${GF_PATHS_PLUGINS} ${GF_PATHS_DASHBOARDS} ${GF_PATHS_PROVISIONING} && \
-    chmod -R 750 ${GF_PATHS_DATA} ${GF_PATHS_LOGS} ${GF_PATHS_PLUGINS} ${GF_PATHS_DASHBOARDS} ${GF_PATHS_PROVISIONING} && \
+    # Set appropriate permissions for Grafana directories and files
+    chown -R grafana:grafana ${GF_PATHS_DATA} ${GF_PATHS_LOGS} ${GF_PATHS_PLUGINS} ${GF_PATHS_DASHBOARDS} ${GF_PATHS_PROVISIONING} /tmp/commands_to_run.sh && \
+    chmod -R 750 ${GF_PATHS_DATA} ${GF_PATHS_LOGS} ${GF_PATHS_PLUGINS} ${GF_PATHS_DASHBOARDS} ${GF_PATHS_PROVISIONING} /tmp/commands_to_run.sh && \
     # Symlink grafana-cli to /bin (deprecated, but I prefer it so it stays.)
     ln -s ${GF_INSTALL_DIR}/bin/grafana-cli /bin/grafana-cli && \
     # Run Prometheus
