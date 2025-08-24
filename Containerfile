@@ -17,8 +17,8 @@ ENV GF_VERSION=12.1.0 \
     GF_PATHS_PROVISIONING="/etc/grafana/provisioning" \
     GF_ADMIN_USER="admin"
 
-# Adding wrapper script for init CMD
-ADD bin/commands_to_run.sh /tmp
+# Copy wrapper script for init CMD
+COPY bin/commands_to_run.sh /tmp
 # Copy the configuration files from the host into the image
 COPY grafana/config ${GF_PATHS_CONFIG}
 # Copy the provisioning files into the image
