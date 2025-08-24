@@ -97,4 +97,4 @@ CMD ["sh", "-c", "./bin/grafana-server \
      cfg:default.paths.logs=/var/log/grafana \
      cfg:default.paths.plugins=/var/lib/grafana/plugins \
      cfg:default.paths.provisioning=/etc/grafana/provisioning \
-     ; prometheus --config-file ${GF_PATHS_CONFIG}/prometheus.yml"]
+     ; prometheus --config.file ${GF_PATHS_CONFIG}/prometheus.yml"]
