@@ -4,8 +4,10 @@ FROM alpine:latest
 # Set environment variables for Grafana
 # Updated GF_VERSION to 12.1.0 (latest stable as of search)
 # Updated GF_INFINITY_VERSION to 3.4.1 (latest stable as of search)
+# Updated GF_PROMETHEUS_VERSION to 3.6.0 (latest stable as of search)
 ENV GF_VERSION=12.1.0 \
     GF_INFINITY_VERSION=3.4.1 \
+    GF_PROMETHEUS_VERSION=3.6.0 \
     GF_INSTALL_DIR="/usr/share/grafana" \
     GF_PATHS_CONFIG="/etc/grafana" \
     GF_PATHS_DATA="/var/lib/grafana" \
@@ -24,6 +26,7 @@ ENV GF_VERSION=12.1.0 \
 # - fontconfig, freetype: Required for Grafana's rendering capabilities
 # - udev: Often a dependency for fontconfig/freetype in Alpine contexts
 # - net-tools: Added for network troubleshooting within Container
+# - prometheus: Necessary for the Prometheus data source
 RUN apk add --no-cache \
     ca-certificates \
     wget \
@@ -33,7 +36,8 @@ RUN apk add --no-cache \
     freetype \
     udev \
     tzdata \
-    net-tools && \
+    net-tools \
+    prometheus && \
     # Download Grafana
     # Updated URL to reflect the new GF_VERSION and filename pattern
     wget https://dl.grafana.com/oss/release/grafana-${GF_VERSION}.linux-amd64.tar.gz -O /tmp/grafana.tar.gz && \
@@ -44,7 +48,7 @@ RUN apk add --no-cache \
     # Remove the downloaded archive
     rm /tmp/grafana.tar.gz && \
     # Download Grafana Infinity plugin
-    wget https://storage.googleapis.com/integration-artifacts/yesoreyeram-infinity-datasource/release/${GF_INFINITY_VERSION}/linux/yesoreyeram-infinity-datasource-${GF_INFINITY_VERSION}.linux_amd64.zip -O /tmp/grafana-infinity.zip &&\
+    wget https://storage.googleapis.com/integration-artifacts/yesoreyeram-infinity-datasource/release/${GF_INFINITY_VERSION}/linux/yesoreyeram-infinity-datasource-${GF_INFINITY_VERSION}.linux_amd64.zip -O /tmp/grafana-infinity.zip && \
     # Extract Plugin to plugins directory
     unzip /tmp/grafana-infinity.zip -d ${GF_PATHS_PLUGINS} && \
     # Remove the downloaded file
@@ -54,8 +58,9 @@ RUN apk add --no-cache \
     # Set appropriate permissions for Grafana directories
     chown -R grafana:grafana ${GF_PATHS_DATA} ${GF_PATHS_LOGS} ${GF_PATHS_PLUGINS} ${GF_PATHS_DASHBOARDS} ${GF_PATHS_PROVISIONING} && \
     chmod -R 750 ${GF_PATHS_DATA} ${GF_PATHS_LOGS} ${GF_PATHS_PLUGINS} ${GF_PATHS_DASHBOARDS} ${GF_PATHS_PROVISIONING} && \
-    # Symlink grafana-cli to /bin
-    ln -s /usr/share/grafana/bin/grafana-cli /bin/grafana-cli && \
+    # Symlink grafana-cli and prometheus to /bin
+    ln -s ${GF_INSTALL_DIR}/bin/grafana-cli /bin/grafana-cli && \
+    ln -s ${GF_PATHS_PLUGINS}/prometheus-${GF_PROMETHEUS_VERSION}-rc.0.linux-amd64/prometheus /usr/bin/prometheus && \
     # Clean up apk cache
     rm -rf /var/cache/apk/* 
 
@@ -68,6 +73,9 @@ COPY grafana/dashboards ${GF_PATHS_DASHBOARDS}
 
 # Expose Grafana's default port
 EXPOSE 3000
+
+# Expose Prometheus' default port
+EXPOSE 9090
 
 # Set the working directory
 WORKDIR ${GF_INSTALL_DIR}
@@ -83,3 +91,7 @@ CMD ["./bin/grafana-server", \
     "cfg:default.paths.logs=/var/log/grafana", \
     "cfg:default.paths.plugins=/var/lib/grafana/plugins", \
     "cfg:default.paths.provisioning=/etc/grafana/provisioning"]
+
+# Also, define the command to run Prometheus when the container starts
+CMD ["./usr/bin/prometheus", \
+    "--config.file", "${GF_PATHS_CONFIG}/prometheus.yml"]

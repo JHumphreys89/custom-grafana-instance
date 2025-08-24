@@ -28,7 +28,7 @@ Once the image is built, you can run a container from it. This command will:
 - `grafana-custom`: Specifies the name of the image you just built.
 
 ```shell
-podman run -d --name grafana-server -p 3000:3000 grafana-custom
+podman run -d --name grafana-server -p 3000:3000 -p 9090:9090 grafana-custom
 ```
 
 #### **Setting an Admin Password for the Grafana Admin Account:**
