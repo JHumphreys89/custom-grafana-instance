@@ -15,9 +15,10 @@ ENV GF_VERSION=12.1.0 \
     GF_PATHS_DASHBOARDS="/var/lib/grafana/dashboards" \
     GF_PATHS_PLUGINS="/var/lib/grafana/plugins" \
     GF_PATHS_PROVISIONING="/etc/grafana/provisioning" \
-    GF_ADMIN_USER="admin" \
-    GF_ADMIN_PASS=""
+    GF_ADMIN_USER="admin"
 
+# Copy wrapper script for init CMD
+COPY bin/commands_to_run.sh /tmp
 # Copy the configuration files from the host into the image
 COPY grafana/config ${GF_PATHS_CONFIG}
 # Copy the provisioning files into the image
@@ -63,8 +64,8 @@ RUN apk add --no-cache \
     # Create a Grafana user and group
     addgroup -S grafana && adduser -S -G grafana grafana && \
     # Set appropriate permissions for Grafana directories and files
-    chown -R grafana:grafana ${GF_PATHS_DATA} ${GF_PATHS_LOGS} ${GF_PATHS_PLUGINS} ${GF_PATHS_DASHBOARDS} ${GF_PATHS_PROVISIONING} && \
-    chmod -R 750 ${GF_PATHS_DATA} ${GF_PATHS_LOGS} ${GF_PATHS_PLUGINS} ${GF_PATHS_DASHBOARDS} ${GF_PATHS_PROVISIONING} && \
+    chown -R grafana:grafana ${GF_PATHS_DATA} ${GF_PATHS_LOGS} ${GF_PATHS_PLUGINS} ${GF_PATHS_DASHBOARDS} ${GF_PATHS_PROVISIONING} /tmp/commands_to_run.sh && \
+    chmod -R 750 ${GF_PATHS_DATA} ${GF_PATHS_LOGS} ${GF_PATHS_PLUGINS} ${GF_PATHS_DASHBOARDS} ${GF_PATHS_PROVISIONING} /tmp/commands_to_run.sh && \
     # Symlink grafana-cli to /bin (deprecated, but I prefer it so it stays.)
     ln -s ${GF_INSTALL_DIR}/bin/grafana-cli /bin/grafana-cli && \
     # Run Prometheus
@@ -84,11 +85,14 @@ WORKDIR ${GF_INSTALL_DIR}
 # Switch to the Grafana user
 USER grafana
 
+# Run commands_to_run.sh when the Container starts
+ENTRYPOINT ["/tmp/commands_to_run.sh"]
+
 # Then define the command to run Grafana when the container starts
-CMD ["./bin/grafana-server", \
-    "--homepath", "${GF_PATHS_HOME}", \
-    "--config", "${GF_PATHS_CONFIG}/grafana.ini", \
-    "cfg:default.paths.data=${GF_PATHS_DATA}", \
-    "cfg:default.paths.logs=${GF_PATHS_LOGS}", \
-    "cfg:default.paths.plugins=${GF_PATHS_PLUGINS}", \
-    "cfg:default.paths.provisioning=${GF_PATHS_PROVISIONING}"]
+#CMD ["./bin/grafana-server", \
+#    "--homepath", "/usr/share/grafana", \
+#    "--config", "/etc/grafana/grafana.ini", \
+#    "cfg:default.paths.data=/var/lib/grafana", \
+#    "cfg:default.paths.logs=/var/log/grafana", \
+#    "cfg:default.paths.plugins=/var/lib/grafana/plugins", \
+#    "cfg:default.paths.provisioning=/etc/grafana/provisioning"]
