@@ -42,6 +42,12 @@ podman exec grafana-server printenv GF_ADMIN_PASS
 
 After running the podman run command, Grafana should be accessible in your web browser at `http://localhost:3000`
 
+#### 
+
+```shell
+podman exec "/usr/bin/prometheus --config.file "${GF_PATHS_CONFIG} &"
+```
+
 ### 3. Signing into Grafana
 To sign into Grafana, you can enter `admin`/`admin` as your username and password to sign in as the Grafana Admin account. It should prompt you to create a new password upon a successful login attempt.
 
