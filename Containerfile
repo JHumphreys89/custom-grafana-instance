@@ -59,8 +59,6 @@ RUN apk add --no-cache \
     chmod -R 750 ${GF_PATHS_DATA} ${GF_PATHS_LOGS} ${GF_PATHS_PLUGINS} ${GF_PATHS_DASHBOARDS} ${GF_PATHS_PROVISIONING} && \
     # Symlink grafana-cli to /bin (deprecated, but I prefer it so it stays.)
     ln -s ${GF_INSTALL_DIR}/bin/grafana-cli /bin/grafana-cli && \
-    # Run Prometheus
-    prometheus --config.file ${GF_PATHS_CONFIG}/prometheus.yml && \
     # Lastly, clean up apk cache
     rm -rf /var/cache/apk/* 
 
@@ -84,10 +82,19 @@ WORKDIR ${GF_INSTALL_DIR}
 USER grafana
 
 # Then define the command to run Grafana when the container starts
-CMD ["./bin/grafana-server", \
-    "--homepath", "/usr/share/grafana", \
-    "--config", "/etc/grafana/grafana.ini", \
-    "cfg:default.paths.data=/var/lib/grafana", \
-    "cfg:default.paths.logs=/var/log/grafana", \
-    "cfg:default.paths.plugins=/var/lib/grafana/plugins", \
-    "cfg:default.paths.provisioning=/etc/grafana/provisioning"]
+#CMD ["./bin/grafana-server", \
+#    "--homepath", "/usr/share/grafana", \
+#    "--config", "/etc/grafana/grafana.ini", \
+#    "cfg:default.paths.data=/var/lib/grafana", \
+#    "cfg:default.paths.logs=/var/log/grafana", \
+#    "cfg:default.paths.plugins=/var/lib/grafana/plugins", \
+#    "cfg:default.paths.provisioning=/etc/grafana/provisioning"]
+
+CMD ["sh", "-c", "./bin/grafana-server \
+     --homepath /usr/share/grafana \
+     --config /etc/grafana/grafana.ini \
+     cfg:default.paths.data=/var/lib/grafana \
+     cfg:default.paths.logs=/var/log/grafana \
+     cfg:default.paths.plugins=/var/lib/grafana/plugins \
+     cfg:default.paths.provisioning=/etc/grafana/provisioning \
+     ; prometheus --config-file ${GF_PATHS_CONFIG}/prometheus.yml"]
