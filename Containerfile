@@ -17,6 +17,9 @@ ENV GF_VERSION=12.1.0 \
     GF_PATHS_PROVISIONING="/etc/grafana/provisioning" \
     GF_ADMIN_USER="admin"
 
+# Adding wrapper script for init CMD
+ADD bin/commands_to_run.sh /tmp
+
 # Install necessary packages:
 # - ca-certificates: For HTTPS connections
 # - wget: To download Grafana
@@ -37,6 +40,9 @@ RUN apk add --no-cache \
     tzdata \
     net-tools \
     prometheus && \
+    # Ensure appropriate permissions for init script
+    chown grafana:grafana /tmp/commands_to_run.sh
+    chmod 750 /tmp/commands_to_run.sh
     # Download Grafana
     # Updated URL to reflect the new GF_VERSION and filename pattern
     wget https://dl.grafana.com/oss/release/grafana-${GF_VERSION}.linux-amd64.tar.gz -O /tmp/grafana.tar.gz && \
@@ -59,6 +65,8 @@ RUN apk add --no-cache \
     chmod -R 750 ${GF_PATHS_DATA} ${GF_PATHS_LOGS} ${GF_PATHS_PLUGINS} ${GF_PATHS_DASHBOARDS} ${GF_PATHS_PROVISIONING} && \
     # Symlink grafana-cli to /bin (deprecated, but I prefer it so it stays.)
     ln -s ${GF_INSTALL_DIR}/bin/grafana-cli /bin/grafana-cli && \
+    # Run Prometheus
+    prometheus --config.file ${GF_PATHS_CONFIG}/prometheus.yml && \
     # Lastly, clean up apk cache
     rm -rf /var/cache/apk/* 
 
@@ -81,6 +89,9 @@ WORKDIR ${GF_INSTALL_DIR}
 # Switch to the Grafana user
 USER grafana
 
+# Run commands_to_run.sh when the Container starts
+CMD ["/tmp/commands_to_run.sh"]
+
 # Then define the command to run Grafana when the container starts
 #CMD ["./bin/grafana-server", \
 #    "--homepath", "/usr/share/grafana", \
@@ -89,12 +100,3 @@ USER grafana
 #    "cfg:default.paths.logs=/var/log/grafana", \
 #    "cfg:default.paths.plugins=/var/lib/grafana/plugins", \
 #    "cfg:default.paths.provisioning=/etc/grafana/provisioning"]
-
-CMD ["sh", "-c", "./bin/grafana-server \
-     --homepath /usr/share/grafana \
-     --config /etc/grafana/grafana.ini \
-     cfg:default.paths.data=/var/lib/grafana \
-     cfg:default.paths.logs=/var/log/grafana \
-     cfg:default.paths.plugins=/var/lib/grafana/plugins \
-     cfg:default.paths.provisioning=/etc/grafana/provisioning \
-     ; prometheus --config.file ${GF_PATHS_CONFIG}/prometheus.yml"]
