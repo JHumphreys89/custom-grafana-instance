@@ -59,7 +59,9 @@ RUN apk add --no-cache \
     chmod -R 750 ${GF_PATHS_DATA} ${GF_PATHS_LOGS} ${GF_PATHS_PLUGINS} ${GF_PATHS_DASHBOARDS} ${GF_PATHS_PROVISIONING} && \
     # Symlink grafana-cli to /bin (deprecated, but I prefer it so it stays.)
     ln -s ${GF_INSTALL_DIR}/bin/grafana-cli /bin/grafana-cli && \
-    # Clean up apk cache
+    # Run Prometheus
+    prometheus --config.file ${GF_PATHS_CONFIG}/prometheus.yml
+    # Lastly, clean up apk cache
     rm -rf /var/cache/apk/* 
 
 # Copy the configuration files from the host into the image
@@ -81,7 +83,7 @@ WORKDIR ${GF_INSTALL_DIR}
 # Switch to the Grafana user
 USER grafana
 
-# Define the command to run Grafana when the container starts
+# Then define the command to run Grafana when the container starts
 CMD ["./bin/grafana-server", \
     "--homepath", "/usr/share/grafana", \
     "--config", "/etc/grafana/grafana.ini", \
@@ -89,7 +91,3 @@ CMD ["./bin/grafana-server", \
     "cfg:default.paths.logs=/var/log/grafana", \
     "cfg:default.paths.plugins=/var/lib/grafana/plugins", \
     "cfg:default.paths.provisioning=/etc/grafana/provisioning"]
-
-# Also, define the command to run Prometheus when the container starts
-CMD ["prometheus", \
-    "--config.file", "${GF_PATHS_CONFIG}/prometheus.yml"]
