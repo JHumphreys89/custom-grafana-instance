@@ -1,3 +1,8 @@
+![License](https://img.shields.io/github/license/JHumphreys89/custom-grafana-instance)
+![Issues](https://img.shields.io/github/issues/JHumphreys89/custom-grafana-instance)
+![PRs](https://img.shields.io/github/issues-pr/JHumphreys89/custom-grafana-instance)
+![Dependabot](https://img.shields.io/badge/dependabot-active-brightgreen?logo=dependabot)
+
 # Grafana - Provisioning as Code
 This custom Grafana image accomplishes the following:
 - Sets up environment variables for paths used in Grafana configuration
