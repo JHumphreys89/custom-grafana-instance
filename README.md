@@ -16,10 +16,10 @@ Using the steps below, you will be:
 **Before beginning instructions, ensure that you have cloned a copy of this repository and are checked out on the `main` branch.**
 
 ### 1. Build the podman image
-Run the following command, which tells podman to build an image using the Containerfile in the _root_ `git-grafana` directory (.) and tag it with the name grafana-custom:
+Run the following command, which tells podman to build an image using the Containerfile in the _root_ `custom-grafana-instance` directory (.) and tag it with the name grafana-custom:
 
 ```shell
-cd git-grafana
+cd custom-grafana-instance
 podman build -t grafana-custom .
 ```
 
