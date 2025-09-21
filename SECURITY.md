@@ -4,7 +4,7 @@
 
 If you discover any security issues in this repository, please contact me via email:
 
-**Email:** your-email@example.com
+**Email:** security.custom-grafana-instance@jonhumphreys.com
 
 ## Important Notice
 
