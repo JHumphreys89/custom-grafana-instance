@@ -3,6 +3,8 @@
 ![PRs](https://img.shields.io/github/issues-pr/JHumphreys89/custom-grafana-instance)
 ![Dependabot](https://img.shields.io/badge/dependabot-active-brightgreen?logo=dependabot)
 
+> NOTE: If you have questions about installing Podman or Windows Subsystem for Linux (WSL) on Windows 10/11, you can check out my blog post [here](https://medium.com/@jhumphreys89/setting-up-windows-subsystem-for-linux-wsl-and-podman-for-development-and-testing-b889583d9226) for tips on getting started.
+
 # Grafana - Provisioning as Code
 This custom Grafana image accomplishes the following:
 - Sets up environment variables for paths used in Grafana configuration
